@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PayCheckPK — Verify Payment Screenshots</title>
+    <meta name="description" content="Check if a JazzCash, Easypaisa or bank screenshot is real or fake.">
+    <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+
+    <header>
+        <div class="logo">PayCheck<span>PK</span></div>
+        <nav>
+            <a href="#how-it-works">How it works</a>
+            <a href="pricing.html" class="nav-upgrade">Upgrade Pro</a>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <h1>Is This Payment Screenshot <em>Real?</em></h1>
+        <p>Upload a JazzCash, Easypaisa, or bank receipt — get an instant fraud risk report.</p>
+        <div class="supported-badges">
+            <span>JazzCash</span>
+            <span>Easypaisa</span>
+            <span>HBL</span>
+            <span>UBL</span>
+            <span>Meezan</span>
+            <span>SadaPay</span>
+            <span>NayaPay</span>
+        </div>
+    </section>
+
+    <section class="checker-section">
+        <div class="checker-card">
+
+            <div class="upload-area" id="uploadArea">
+                <div class="upload-icon">📱</div>
+                <p class="upload-main">Drag & drop payment screenshot here</p>
+                <p class="upload-sub">or</p>
+                <label for="fileInput" class="upload-btn">Choose Screenshot</label>
+                <input type="file" id="fileInput" accept="image/*" />
+                <p class="file-name" id="fileName">No file selected</p>
+            </div>
+
+            <div class="preview-wrap" id="previewWrap" hidden>
+                <img id="previewImg" src="" alt="Selected screenshot" />
+                <button class="clear-btn" id="clearBtn">✕ Remove</button>
+            </div>
+
+            <div class="platform-row">
+                <label for="platformSelect">Platform:</label>
+                <select id="platformSelect">
+                    <option value="">Auto-detect</option>
+                    <option value="jazzcash">JazzCash</option>
+                    <option value="easypaisa">Easypaisa</option>
+                    <option value="hbl">HBL</option>
+                    <option value="ubl">UBL</option>
+                    <option value="meezan">Meezan Bank</option>
+                    <option value="sadapay">SadaPay</option>
+                    <option value="nayapay">NayaPay</option>
+                </select>
+            </div>
+
+            <button class="check-btn" id="checkBtn" disabled>
+                <span id="btnText">Select a screenshot to check</span>
+                <span id="btnSpinner" class="spinner" hidden></span>
+            </button>
+
+            <p class="checks-remaining" id="checksRemaining"></p>
+
+            <div class="disclaimer">
+                ⚠️ <strong>Advisory tool only.</strong> Always verify through official apps.
+                <a href="terms.html">Terms</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="result-section" id="resultSection" hidden>
+        <div class="result-card" id="resultCard"></div>
+    </section>
+
+    <section class="how-section" id="how-it-works">
+        <h2>How it works</h2>
+        <div class="steps">
+            <div class="step">
+                <div class="step-num">1</div>
+                <h3>Upload Screenshot</h3>
+                <p>Take a screenshot of the payment receipt and upload it here</p>
+            </div>
+            <div class="step">
+                <div class="step-num">2</div>
+                <h3>AI Analysis</h3>
+                <p>System scans for transaction ID, amount, date, platform branding and more</p>
+            </div>
+            <div class="step">
+                <div class="step-num">3</div>
+                <h3>Risk Report</h3>
+                <p>Get instant LOW / MEDIUM / HIGH risk result with specific reasons</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="trust-section">
+        <div class="trust-grid">
+            <div class="trust-item">
+                <span class="trust-icon">🔒</span>
+                <h4>Screenshot Deleted Instantly</h4>
+                <p>Your image is deleted immediately after analysis</p>
+            </div>
+            <div class="trust-item">
+                <span class="trust-icon">⚡</span>
+                <h4>Results in ~15 Seconds</h4>
+                <p>Fast OCR analysis with image preprocessing</p>
+            </div>
+            <div class="trust-item">
+                <span class="trust-icon">🇵🇰</span>
+                <h4>Built for Pakistan</h4>
+                <p>Trained on JazzCash, Easypaisa and local bank formats</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta-section">
+        <h2>Need More Than 10 Checks/Day?</h2>
+        <p>Upgrade to Pro — unlimited checks, API access, detailed reports.</p>
+        <a href="pricing.html" class="cta-btn">See Pro Plans →</a>
+    </section>
+
+    <footer>
+        <div class="footer-inner">
+            <div class="footer-logo">PayCheck<span>PK</span></div>
+            <p>Not affiliated with JazzCash, Easypaisa, or any bank.</p>
+            <div class="footer-links">
+                <a href="terms.html">Terms of Service</a>
+                <a href="mailto:support@paycheckpk.com">Contact</a>
+            </div>
+            <p class="footer-copy">© 2024 PayCheckPK</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
