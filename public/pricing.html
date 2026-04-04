@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PayVerifyPK — Pricing</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+        .pricing-page {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 60px 24px
+        }
+
+        .pricing-page h1 {
+            text-align: center;
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 8px
+        }
+
+        .sub {
+            text-align: center;
+            color: var(--gray-600);
+            margin-bottom: 48px
+        }
+
+        .plans {
+            display: flex;
+            gap: 24px;
+            justify-content: center;
+            flex-wrap: wrap
+        }
+
+        .plan {
+            background: var(--white);
+            border: 1px solid var(--gray-200);
+            border-radius: var(--radius);
+            padding: 32px;
+            flex: 1;
+            min-width: 240px;
+            max-width: 320px;
+            box-shadow: var(--shadow)
+        }
+
+        .plan.featured {
+            border-color: var(--blue);
+            border-width: 2px;
+            position: relative
+        }
+
+        .plan.featured::before {
+            content: 'Most Popular';
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--blue);
+            color: white;
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 3px 12px;
+            border-radius: 20px
+        }
+
+        .plan h2 {
+            font-size: 1.2rem;
+            font-weight: 800;
+            margin-bottom: 8px
+        }
+
+        .plan .price {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--blue);
+            margin-bottom: 4px
+        }
+
+        .plan .price span {
+            font-size: 0.9rem;
+            color: var(--gray-400);
+            font-weight: 400
+        }
+
+        .plan .desc {
+            font-size: 0.85rem;
+            color: var(--gray-600);
+            margin-bottom: 20px
+        }
+
+        .plan ul {
+            list-style: none;
+            margin-bottom: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px
+        }
+
+        .plan ul li {
+            font-size: 0.9rem;
+            display: flex;
+            gap: 8px
+        }
+
+        .plan ul li::before {
+            content: '✓';
+            color: var(--green);
+            font-weight: 800
+        }
+
+        .plan-btn {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            text-align: center;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            text-decoration: none
+        }
+
+        .plan-btn-free {
+            border: 1px solid var(--gray-200);
+            color: var(--gray-600);
+            background: var(--white)
+        }
+
+        .plan-btn-pro {
+            background: var(--blue);
+            color: white
+        }
+
+        .plan-btn-biz {
+            background: var(--gray-800);
+            color: white
+        }
+
+        .faq {
+            margin-top: 60px
+        }
+
+        .faq h2 {
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 32px
+        }
+
+        .faq-item {
+            border-top: 1px solid var(--gray-200);
+            padding: 16px 0
+        }
+
+        .faq-item:last-child {
+            border-bottom: 1px solid var(--gray-200)
+        }
+
+        .faq-q {
+            font-weight: 700;
+            margin-bottom: 8px
+        }
+
+        .faq-a {
+            color: var(--gray-600);
+            font-size: 0.9rem
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="logo"><a href="/" style="text-decoration:none;color:inherit;">PayVerify<span>PK</span></a></div>
+        <nav><a href="/">← Back to checker</a></nav>
+    </header>
+    <div class="pricing-page">
+        <h1>Simple, Honest Pricing</h1>
+        <p class="sub">Start free. Upgrade when you need more.</p>
+        <div class="plans">
+            <div class="plan">
+                <h2>Free</h2>
+                <div class="price">Rs 0 <span>/ forever</span></div>
+                <p class="desc">For individuals verifying occasional payments</p>
+                <ul>
+                    <li>10 checks per day</li>
+                    <li>JazzCash & Easypaisa</li>
+                    <li>Basic risk report</li>
+                    <li>No signup required</li>
+                </ul>
+                <a href="/" class="plan-btn plan-btn-free">Start Checking</a>
+            </div>
+            <div class="plan featured">
+                <h2>Pro</h2>
+                <div class="price">Rs 999 <span>/ month</span></div>
+                <p class="desc">For freelancers, online sellers, and small businesses</p>
+                <ul>
+                    <li>Unlimited checks</li>
+                    <li>All 7 platforms</li>
+                    <li>Detailed analysis report</li>
+                    <li>API access (200 req/day)</li>
+                    <li>Email support</li>
+                </ul>
+                <a href="https://wa.me/923264485927?text=Pro%20Plan%20lena%20hai" class="plan-btn plan-btn-pro">Get Pro
+                    →</a>
+            </div>
+            <div class="plan">
+                <h2>Business</h2>
+                <div class="price">Rs 3,999 <span>/ month</span></div>
+                <p class="desc">For marketplaces and high volume</p>
+                <ul>
+                    <li>Everything in Pro</li>
+                    <li>Unlimited API</li>
+                    <li>5 team seats</li>
+                    <li>Bulk upload CSV</li>
+                    <li>WhatsApp support</li>
+                </ul>
+                <a href="mailto:support@PayVerifypk.com?subject=Business Plan" class="plan-btn plan-btn-biz">Contact Us
+                    →</a>
+            </div>
+        </div>
+        <div class="faq">
+            <h2>Frequently Asked Questions</h2>
+            <div class="faq-item">
+                <p class="faq-q">Is this tool 100% accurate?</p>
+                <p class="faq-a">No tool guarantees 100% accuracy. Always verify through official JazzCash or Easypaisa
+                    app before releasing goods.</p>
+            </div>
+            <div class="faq-item">
+                <p class="faq-q">Is my screenshot stored?</p>
+                <p class="faq-a">No. Your image is deleted immediately after analysis.</p>
+            </div>
+            <div class="faq-item">
+                <p class="faq-q">How do I pay for Pro?</p>
+                <p class="faq-a">Email support@PayVerifypk.com — we accept JazzCash, Easypaisa, and bank transfer.</p>
+            </div>
+        </div>
+    </div>
+    <footer>
+        <div class="footer-inner">
+            <div class="footer-logo">PayVerify<span>PK</span></div>
+            <p class="footer-copy">© 2024 PayVerifyPK</p>
+        </div>
+    </footer>
+</body>
+
+</html>
