@@ -17,7 +17,10 @@ let selectedFile = null;
 uploadArea.addEventListener('dragover', (e) => { e.preventDefault(); uploadArea.classList.add('drag-over'); });
 uploadArea.addEventListener('dragleave', () => { uploadArea.classList.remove('drag-over'); });
 uploadArea.addEventListener('drop', (e) => { e.preventDefault(); uploadArea.classList.remove('drag-over'); const file = e.dataTransfer.files[0]; if (file) handleFileSelect(file); });
-uploadArea.addEventListener('click', () => fileInput.click());
+uploadArea.addEventListener('click', (e) => {
+    if (e.target.closest('label') || e.target === fileInput) return;
+    fileInput.click();
+});
 fileInput.addEventListener('change', () => { if (fileInput.files[0]) handleFileSelect(fileInput.files[0]); });
 clearBtn.addEventListener('click', (e) => { e.stopPropagation(); resetFile(); });
 
@@ -58,7 +61,7 @@ checkBtn.addEventListener('click', async () => {
         formData.append('screenshot', selectedFile);
         const platform = platformSelect.value;
         if (platform) formData.append('platform', platform);
-        const response = await fetch('/api/check', { method: 'POST', body: formData });
+        const response = await fetch('https://payverifypk.onrender.com/api/check', { method: 'POST', body: formData });
         const data = await response.json();
         if (!response.ok) {
             if (response.status === 429) showUpgradePrompt(data);
