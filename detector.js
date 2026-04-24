@@ -274,7 +274,7 @@ async function detectManipulation(imagePath) {
             score += 20;
         }
 
-        if (highDiffRatio > 0.15) {
+        if (highDiffRatio > 0.35) {
             issues.push(`${(highDiffRatio * 100).toFixed(1)}% of pixels show high error levels — strong indicator of image manipulation`);
             score += 30;
         }
@@ -283,7 +283,7 @@ async function detectManipulation(imagePath) {
         // Real screenshots have natural gradient variation
         // Pasted text/numbers on screenshots create uniform rectangular blocks
         const uniformBlocks = detectUniformBlocks(origData, original.info.width, original.info.height);
-        if (uniformBlocks > 5) {
+        if (uniformBlocks > 50) {
             issues.push(`${uniformBlocks} suspiciously uniform rectangular regions detected — possible text overlay or number replacement`);
             score += 25;
         }
@@ -396,7 +396,7 @@ async function verifyVisualLayout(imagePath, platformKey, ocrWords) {
 
         // Check 2: Brand color presence in image
         const colorScore = await checkBrandColors(imagePath, p.brandColors);
-        if (colorScore < 0.01) {
+        if (colorScore < 0.005) {
             issues.push(`${p.name} brand colors not detected in image — UI may be fake or heavily edited`);
             score += 25;
         }
