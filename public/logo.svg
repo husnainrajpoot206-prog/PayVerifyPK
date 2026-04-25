@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="PayVerifyPK logo">
+  <defs>
+    <linearGradient id="shieldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#21d07a"/>
+      <stop offset="52%" stop-color="#4f8dff"/>
+      <stop offset="100%" stop-color="#8b4dff"/>
+    </linearGradient>
+    <linearGradient id="letterGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#e7eaff"/>
+    </linearGradient>
+  </defs>
+  <path d="M64 8l44 16v31c0 33-20 54-44 65C40 109 20 88 20 55V24L64 8z" fill="url(#shieldGradient)" />
+  <path d="M64 18l35 13v24c0 27-15 45-35 55-20-10-35-28-35-55V31l35-13z" fill="none" stroke="rgba(255,255,255,0.35)" stroke-width="2.4"/>
+  <path d="M44 44h20c9 0 15 5 15 13s-6 13-15 13H54v16h-10V44zm19 18c4 0 6-2 6-5s-2-5-6-5H54v10h9zm44-18L93 86h-12L67 44h11l9 29 9-29h11z" fill="url(#letterGradient)"/>
+</svg>
