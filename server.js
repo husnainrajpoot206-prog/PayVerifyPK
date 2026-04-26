@@ -3,11 +3,104 @@ const multer = require('multer');
 const cors = require('cors');
 const path = require('path');
 const fs = require('fs');
+const Database = require('better-sqlite3');
 const { analyzePaymentScreenshot } = require('./detector');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// ─── SQLite Database Setup ───────────────────────────────────────────────────
+const db = new Database('analytics.db');
+
+db.exec(`
+    CREATE TABLE IF NOT EXISTS visits (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        ip TEXT,
+        action TEXT,
+        platform TEXT,
+        result TEXT,
+        created_at TEXT DEFAULT (datetime('now', 'localtime'))
+    );
+
+    CREATE TABLE IF NOT EXISTS daily_stats (
+        date TEXT PRIMARY KEY,
+        total_checks INTEGER DEFAULT 0,
+        screenshot_checks INTEGER DEFAULT 0,
+        sms_checks INTEGER DEFAULT 0,
+        unique_users INTEGER DEFAULT 0
+    );
+`);
+
+function logAction(ip, action, platform = null, result = null) {
+    try {
+        const today = new Date().toISOString().split('T')[0];
+
+        db.prepare(`
+            INSERT INTO visits (ip, action, platform, result)
+            VALUES (?, ?, ?, ?)
+        `).run(ip, action, platform, result);
+
+        const existing = db.prepare(`SELECT * FROM daily_stats WHERE date = ?`).get(today);
+        const uniqueToday = db.prepare(`
+            SELECT COUNT(DISTINCT ip) as count FROM visits 
+            WHERE date(created_at) = date('now', 'localtime')
+        `).get().count;
+
+        if (existing) {
+            db.prepare(`
+                UPDATE daily_stats SET
+                    total_checks = total_checks + 1,
+                    screenshot_checks = screenshot_checks + CASE WHEN ? = 'screenshot' THEN 1 ELSE 0 END,
+                    sms_checks = sms_checks + CASE WHEN ? = 'sms' THEN 1 ELSE 0 END,
+                    unique_users = ?
+                WHERE date = ?
+            `).run(action, action, uniqueToday, today);
+        } else {
+            db.prepare(`
+                INSERT INTO daily_stats (date, total_checks, screenshot_checks, sms_checks, unique_users)
+                VALUES (?, 1, ?, ?, ?)
+            `).run(
+                today,
+                action === 'screenshot' ? 1 : 0,
+                action === 'sms' ? 1 : 0,
+                uniqueToday
+            );
+        }
+    } catch (err) {
+        console.error('[db error]', err.message);
+    }
+}
+
+// ─── Analytics API ────────────────────────────────────────────────────────────
+app.get('/api/analytics', (req, res) => {
+    try {
+        const today = new Date().toISOString().split('T')[0];
+
+        const todayStats = db.prepare(`SELECT * FROM daily_stats WHERE date = ?`).get(today) || {
+            total_checks: 0, screenshot_checks: 0, sms_checks: 0, unique_users: 0
+        };
+
+        const totalEver = db.prepare(`SELECT COUNT(*) as count FROM visits`).get().count;
+        const totalUsers = db.prepare(`SELECT COUNT(DISTINCT ip) as count FROM visits`).get().count;
+
+        const last7Days = db.prepare(`
+            SELECT date, total_checks, unique_users 
+            FROM daily_stats 
+            ORDER BY date DESC 
+            LIMIT 7
+        `).all();
+
+        return res.json({
+            today: todayStats,
+            allTime: { total_checks: totalEver, unique_users: totalUsers },
+            last7Days
+        });
+    } catch (err) {
+        return res.status(500).json({ error: 'db_error' });
+    }
+});
+
+// ─── Middleware ───────────────────────────────────────────────────────────────
 app.use(cors());
 app.use(express.json());
 app.use(express.static('public'));
@@ -141,6 +234,10 @@ app.post('/api/check', rateLimitMiddleware, upload.single('screenshot'), async (
         const platform = req.body.platform || null;
         const result = await analyzePaymentScreenshot(filePath, platform);
         fs.unlink(filePath, () => { });
+
+        // Log to database
+        logAction(getIp(req), 'screenshot', platform, result.verdict || result.risk || null);
+
         return res.json({
             ...result,
             checksRemaining: parseInt(res.getHeader('X-Checks-Remaining')),
@@ -161,9 +258,25 @@ app.post('/api/sms/verify', (req, res) => {
 
     const parsed = parseSmsByPlatform(platform, smsText);
     if (parsed.error) return res.status(400).json({ error: 'invalid_platform', message: parsed.error });
+
+    // Log to database
+    logAction(getIp(req), 'sms', platform, parsed.status);
+
     return res.json(parsed);
 });
-
+app.get('/api/analytics/recent', (req, res) => {
+    try {
+        const recent = db.prepare(`
+            SELECT * FROM visits 
+            ORDER BY id DESC 
+            LIMIT 50
+        `).all();
+        return res.json(recent);
+    } catch (err) {
+        return res.status(500).json({ error: 'db_error' });
+    }
+});
 app.listen(PORT, () => {
     console.log(`✅ PayVerifyPK running on http://localhost:${PORT}`);
+    console.log(`📊 Analytics: http://localhost:${PORT}/api/analytics`);
 });

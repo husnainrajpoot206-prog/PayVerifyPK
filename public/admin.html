@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PayVerifyPK — Admin Dashboard</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #0a0a1a;
+            color: #fff;
+            min-height: 100vh;
+        }
+
+        /* LOGIN */
+        .login-wrap {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .login-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 2rem;
+            width: 100%;
+            max-width: 360px;
+        }
+
+        .login-card h2 {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            color: #a78bfa;
+        }
+
+        .login-card input {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 8px;
+            color: #fff;
+            font-size: 15px;
+            margin-bottom: 1rem;
+        }
+
+        .login-card button {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #7c3aed, #4f46e5);
+            border: none;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .login-error {
+            color: #f87171;
+            font-size: 13px;
+            text-align: center;
+            margin-top: 0.5rem;
+            display: none;
+        }
+
+        /* DASHBOARD */
+        .dashboard {
+            display: none;
+        }
+
+        .topbar {
+            background: rgba(255, 255, 255, 0.03);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .topbar .brand {
+            font-size: 18px;
+            font-weight: 700;
+            color: #a78bfa;
+        }
+
+        .topbar button {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #fff;
+            padding: 6px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+        }
+
+        .main {
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* STATS GRID */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+
+        .stat-card .label {
+            font-size: 12px;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 8px;
+        }
+
+        .stat-card .value {
+            font-size: 32px;
+            font-weight: 700;
+            color: #a78bfa;
+        }
+
+        .stat-card .sub {
+            font-size: 12px;
+            color: #64748b;
+            margin-top: 4px;
+        }
+
+        /* CHARTS */
+        .charts-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .chart-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+
+        .chart-card h3 {
+            font-size: 14px;
+            color: #94a3b8;
+            margin-bottom: 1rem;
+        }
+
+        /* TABLE */
+        .table-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .table-card h3 {
+            font-size: 14px;
+            color: #94a3b8;
+            margin-bottom: 1rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        th {
+            text-align: left;
+            padding: 8px 12px;
+            color: #64748b;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        td {
+            padding: 10px 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            color: #cbd5e1;
+        }
+
+        tr:hover td {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .badge {
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .badge.confirmed {
+            background: rgba(34, 197, 94, 0.2);
+            color: #4ade80;
+        }
+
+        .badge.screenshot {
+            background: rgba(167, 139, 250, 0.2);
+            color: #a78bfa;
+        }
+
+        .badge.sms {
+            background: rgba(56, 189, 248, 0.2);
+            color: #38bdf8;
+        }
+
+        .badge.unrecognized {
+            background: rgba(248, 113, 113, 0.2);
+            color: #f87171;
+        }
+
+        .refresh-btn {
+            background: linear-gradient(135deg, #7c3aed, #4f46e5);
+            border: none;
+            color: #fff;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            margin-bottom: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .main {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- LOGIN -->
+    <div class="login-wrap" id="loginWrap">
+        <div class="login-card">
+            <h2>🔐 Admin Login</h2>
+            <input type="password" id="passwordInput" placeholder="Enter admin password" />
+            <button onclick="login()">Login</button>
+            <p class="login-error" id="loginError">Wrong password. Try again.</p>
+        </div>
+    </div>
+
+    <!-- DASHBOARD -->
+    <div class="dashboard" id="dashboard">
+        <div class="topbar">
+            <div class="brand">PayVerifyPK — Admin</div>
+            <button onclick="logout()">Logout</button>
+        </div>
+
+        <div class="main">
+            <button class="refresh-btn" onclick="loadData()">🔄 Refresh Data</button>
+
+            <!-- STATS -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="label">Total Checks Today</div>
+                    <div class="value" id="statToday">0</div>
+                    <div class="sub">Screenshot + SMS</div>
+                </div>
+                <div class="stat-card">
+                    <div class="label">Unique Users Today</div>
+                    <div class="value" id="statUsersToday">0</div>
+                    <div class="sub">Unique IPs</div>
+                </div>
+                <div class="stat-card">
+                    <div class="label">All Time Checks</div>
+                    <div class="value" id="statAllTime">0</div>
+                    <div class="sub">Since launch</div>
+                </div>
+                <div class="stat-card">
+                    <div class="label">All Time Users</div>
+                    <div class="value" id="statAllUsers">0</div>
+                    <div class="sub">Unique IPs ever</div>
+                </div>
+                <div class="stat-card">
+                    <div class="label">Screenshot Checks Today</div>
+                    <div class="value" id="statSS">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="label">SMS Checks Today</div>
+                    <div class="value" id="statSMS">0</div>
+                </div>
+            </div>
+
+            <!-- CHARTS -->
+            <div class="charts-grid">
+                <div class="chart-card">
+                    <h3>Last 7 Days — Total Checks</h3>
+                    <canvas id="checksChart"></canvas>
+                </div>
+                <div class="chart-card">
+                    <h3>Today — Screenshot vs SMS</h3>
+                    <canvas id="typeChart"></canvas>
+                </div>
+            </div>
+
+            <!-- RECENT ACTIVITY TABLE -->
+            <div class="table-card">
+                <h3>Recent Activity</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Time</th>
+                            <th>Action</th>
+                            <th>Platform</th>
+                            <th>Result</th>
+                            <th>IP</th>
+                        </tr>
+                    </thead>
+                    <tbody id="activityTable">
+                        <tr>
+                            <td colspan="5" style="color:#64748b;">Loading...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const ADMIN_PASSWORD = 'admin123'; // Change this password
+
+        let checksChart, typeChart;
+
+        function login() {
+            const pass = document.getElementById('passwordInput').value;
+            if (pass === ADMIN_PASSWORD) {
+                document.getElementById('loginWrap').style.display = 'none';
+                document.getElementById('dashboard').style.display = 'block';
+                loadData();
+            } else {
+                document.getElementById('loginError').style.display = 'block';
+            }
+        }
+
+        function logout() {
+            document.getElementById('loginWrap').style.display = 'flex';
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('passwordInput').value = '';
+        }
+
+        document.getElementById('passwordInput').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') login();
+        });
+
+        async function loadData() {
+            try {
+                const res = await fetch('/api/analytics');
+                const data = await res.json();
+
+                // Stats
+                document.getElementById('statToday').textContent = data.today.total_checks || 0;
+                document.getElementById('statUsersToday').textContent = data.today.unique_users || 0;
+                document.getElementById('statAllTime').textContent = data.allTime.total_checks || 0;
+                document.getElementById('statAllUsers').textContent = data.allTime.unique_users || 0;
+                document.getElementById('statSS').textContent = data.today.screenshot_checks || 0;
+                document.getElementById('statSMS').textContent = data.today.sms_checks || 0;
+
+                // Charts
+                const labels = data.last7Days.map(d => d.date).reverse();
+                const values = data.last7Days.map(d => d.total_checks).reverse();
+
+                if (checksChart) checksChart.destroy();
+                checksChart = new Chart(document.getElementById('checksChart'), {
+                    type: 'bar',
+                    data: {
+                        labels,
+                        datasets: [{
+                            label: 'Checks',
+                            data: values,
+                            backgroundColor: 'rgba(124,58,237,0.7)',
+                            borderRadius: 6,
+                        }]
+                    },
+                    options: {
+                        plugins: { legend: { display: false } },
+                        scales: {
+                            x: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(255,255,255,0.05)' } },
+                            y: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(255,255,255,0.05)' }, beginAtZero: true }
+                        }
+                    }
+                });
+
+                if (typeChart) typeChart.destroy();
+                typeChart = new Chart(document.getElementById('typeChart'), {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Screenshot', 'SMS'],
+                        datasets: [{
+                            data: [data.today.screenshot_checks || 0, data.today.sms_checks || 0],
+                            backgroundColor: ['rgba(124,58,237,0.8)', 'rgba(56,189,248,0.8)'],
+                            borderWidth: 0,
+                        }]
+                    },
+                    options: {
+                        plugins: { legend: { labels: { color: '#94a3b8' } } }
+                    }
+                });
+
+                // Recent activity
+                const recentRes = await fetch('/api/analytics/recent');
+                const recentData = await recentRes.json();
+                const tbody = document.getElementById('activityTable');
+
+                if (recentData.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="5" style="color:#64748b;">No activity yet.</td></tr>';
+                } else {
+                    tbody.innerHTML = recentData.map(row => `
+                    <tr>
+                        <td>${row.created_at}</td>
+                        <td><span class="badge ${row.action}">${row.action}</span></td>
+                        <td>${row.platform || '—'}</td>
+                        <td><span class="badge ${(row.result || '').toLowerCase()}">${row.result || '—'}</span></td>
+                        <td>${maskIp(row.ip)}</td>
+                    </tr>
+                `).join('');
+                }
+
+            } catch (err) {
+                console.error('Failed to load analytics:', err);
+            }
+        }
+
+        function maskIp(ip) {
+            if (!ip) return '—';
+            const parts = ip.split('.');
+            if (parts.length === 4) return `${parts[0]}.${parts[1]}.*.*`;
+            return ip.slice(0, 6) + '***';
+        }
+    </script>
+</body>
+
+</html>
